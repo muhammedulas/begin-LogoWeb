@@ -1,0 +1,221 @@
+<div class="wrapper">
+  <h2 mat-dialog-title style="text-align: center;">Satış Siparişi</h2>
+  <div mat-dialog-content>
+    <mat-tab-group [dynamicHeight]="true">
+      <mat-tab label="Genel">
+        <div class="flexContainer">
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input type="text" matInput autocomplete="off" placeholder="Fiş No." [(ngModel)]="newRecord.NUMBER" [disabled]="newRecord.INSPECT">
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input type="datetime-local" matInput autocomplete="off" placeholder="Tarih" [(ngModel)]="newRecord.DATE" [disabled]="newRecord.INSPECT">
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input #arpCode type="text" matInput autocomplete="off" placeholder="Cari Hesap Kodu"
+                (keyup)="filterArpOptions(arpCode.value, 'code')" (focusin)="filterArpOptions(arpCode.value, 'code')"
+                [(ngModel)]="newRecord.ARP_CODE" [matAutocomplete]="arpCodeAutoComplete"
+                [ngModelOptions]="{standalone:true}" [disabled]="newRecord.INSPECT">
+
+              <mat-autocomplete autoActiveFirstOption #arpCodeAutoComplete="matAutocomplete">
+                <mat-option *ngFor="let option of  filteredArpOptions" [value]="option.CODE"
+                  (click)="setArpCode(option, 'code')" (keyup)="setArpCode(option, 'code', $event)">
+                  {{option.CODE}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input #arpdefinition type="text" matInput autocomplete="off" placeholder="Cari Hesap Açıklaması"
+                (keyup)="filterArpOptions(arpdefinition.value, 'definition')"
+                (focusin)="filterArpOptions(arpdefinition.value, 'definition')" [(ngModel)]="newRecord.ARP_DEFINITION_"
+                [matAutocomplete]="arpDefAutoComplete" [ngModelOptions]="{standalone:true}" [disabled]="newRecord.INSPECT">
+
+              <mat-autocomplete autoActiveFirstOption #arpDefAutoComplete="matAutocomplete">
+                <mat-option *ngFor="let option of  filteredArpOptions" [value]="option.DEFINITION_"
+                  (click)="setArpCode(option, 'definition')" (keyup)="setArpCode(option, 'definition', $event)">
+                  {{option.DEFINITION_}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input type="text" matInput autocomplete="off" placeholder="Özel Kod" [(ngModel)]="newRecord.AUXIL_CODE">
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input type="text" matInput autocomplete="off" placeholder="Satış Elemanı Kodu"
+                [(ngModel)]="newRecord.SALESMAN_CODE" disabled>
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input #paymentPlan type="text" matInput autocomplete="off" placeholder="Ödeme Planı"
+                (keyup)="filterPaymentOptions(paymentPlan.value)" (focusin)="filterPaymentOptions(paymentPlan.value)"
+                [(ngModel)]="newRecord.PAYMENT_CODE" [matAutocomplete]="paymentAutoComplete"
+                [ngModelOptions]="{standalone:true}" [disabled]="newRecord.INSPECT">
+
+              <mat-autocomplete autoActiveFirstOption #paymentAutoComplete="matAutocomplete">
+                <mat-option *ngFor="let option of  filteredPaymentPlans" [value]="option.DEFINITION_"
+                  (click)="setPaymentPlanCode(option)" (keyup)="setPaymentPlanCode(option, $event)">
+                  {{option.CODE}} -> {{option.DEFINITION_}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input type="text" matInput autocomplete="off" placeholder="Proje Kodu"
+                [(ngModel)]="newRecord.PROJECT_CODE" [disabled]="newRecord.INSPECT">
+            </mat-form-field>
+          </div>
+          <div class="flexItem">
+            <mat-form-field [style.width.%]="100">
+              <input type="text" matInput autocomplete="off" placeholder="Belge No." [(ngModel)]="newRecord.DOC_NUMBER">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Ürünler">
+        <div class="selectSection">
+          <mat-form-field id="inp_malzeme" [style.width.%]="40">
+            <input [disabled]="newRecord.INSPECT" #item type="text" matInput autocomplete="off" placeholder="Malzeme"
+              (keyup)="filterItemOptions(item.value)" (focusin)="filterItemOptions(item.value)"
+              [matAutocomplete]="itemAutoComplete">
+
+            <mat-autocomplete autoActiveFirstOption #itemAutoComplete="matAutocomplete">
+              <mat-option *ngFor="let option of  filteredItemOptions" [value]="option.DEFINITION_"
+                (click)="setItemCode(option)" (keyup)="setItemCode(option, $event)">
+                {{option.DEFINITION_}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field id="inp_miktar">
+            <input [disabled]="newRecord.INSPECT" #quantity type="number" matInput min="0" autocomplete="off" placeholder="Miktar">
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field id="inp_birim">
+            <mat-select [disabled]="!unitSelectionActive" placeholder="Birim" *ngIf="selectedUnitSet"
+              [(value)]="selectedUnit">
+              <mat-option *ngFor="let unit of selectedUnitSet.UNITS.items" (click)="setUnit(unit.CODE)"
+                [value]="unit.CODE">
+                {{unit.NAME}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field id="inp_birimFiyat">
+            <input [disabled]="newRecord.INSPECT" type="number" matInput autocomplete="off" min="0" max="18" placeholder="Birim Fiyat"
+              [(ngModel)]="selectedItemOption.PRICE">
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field id="inp_kdv">
+            <input [disabled]="newRecord.INSPECT" type="number" matInput autocomplete="off" min="0" max="18" placeholder="KDV %"
+              [(ngModel)]="selectedItemOption.VAT_RATE">
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field id="inp_indirim">
+            <input [disabled]="newRecord.INSPECT" #indirim type="number" matInput autocomplete="off" min="0" max="100" placeholder="İndirim %">
+          </mat-form-field>
+          &nbsp;
+          <a *ngIf="!newRecord.INSPECT" mat-icon-button class="icon-button" (click)="newLine(quantity.value, indirim.value)">
+            <mat-icon style="color: purple;">add_shopping_cart</mat-icon>
+          </a>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="transaction">
+          <div *ngFor="let item of filterLines();" class="lineWrapper">
+            <div>
+            </div>
+            <div class="transline"
+              [style.transform]="selectedLine == item ?'translateX(' + translinePos + 'px)': 'translateX(0px)'"
+              [ngClass]="{'active': selectedLine == item}" (swipeleft)="swLeft(item)" (swipeRight)="swRight(item)">
+              <h3 style="margin-top: 0;margin-bottom: 0; font-size: smaller; white-space: nowrap;">{{item.MASTER_CODE}}
+              </h3>
+              <small style="font-weight:500; font-size: smaller; white-space: nowrap;">{{item.DEFINITION_}}</small>
+              <br>
+
+              <small class="lineDef"> {{item.QUANTITY}} {{item.UNIT_CODE}} x {{item.PRICE}} &#8378; </small>
+              <small class="lineVal"> {{item.TOTAL}} &#8378; </small>
+              <br>
+
+              <small class="lineDef">İndirim Tutarı (%{{item.DISCOUNT_RATE}})</small>
+              <small class="lineVal">{{item.DISCOUNT_DISTR}} &#8378;</small>
+              <br>
+
+              <small class="lineDef">KDV Tutarı ({{item.VAT_RATE}})</small>
+              <small class="lineVal"> {{item.VAT_AMOUNT}} &#8378;</small>
+              <br>
+
+              <small class="lineDef">Toplam</small>
+              <small class="lineVal"> {{item.TOTAL_NET}} &#8378;</small>
+
+              <div class="redline"></div>
+            </div>
+
+            <button [ngClass]="{'active':selectedLine == item}" mat-icon-button (click)="deleteLine()">
+              <mat-icon>delete</mat-icon>
+            </button>
+
+          </div>
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="Toplamlar">
+        <div class="totalContainer">
+          <div class="description">
+            <mat-form-field id="aciklama" [style.height.%]="50" [style.width.rem]="50">
+              <mat-label>Açıklamalar</mat-label>
+              <textarea [disabled]="newRecord.INSPECT" #detailedDescription matInput cols="50" rows="6" maxlength="300" wrap="hard"
+                [(ngModel)]="newRecord.ITEXT" (keypress)="textareaControl($event)"></textarea>
+            </mat-form-field>
+          </div>
+          <div class="total mat-elevation-z4">
+            <div class="wrapper ">
+              <small class="lineDef">Ara Toplam</small>
+              <small class="lineVal"> {{newRecord.TOTAL_GROSS}} &#8378; </small>
+              <br>
+              <small class="lineDef">İndirim</small>
+              <small class="lineVal"> {{newRecord.TOTAL_DISCOUNTS}} &#8378; </small>
+              <br>
+              <small class="lineDef">İndirimli Tutar</small>
+              <small class="lineVal"> {{newRecord.TOTAL_DISCOUNTED}} &#8378; </small>
+              <br>
+              <small class="lineDef">KDV Toplamı</small>
+              <small class="lineVal"> {{newRecord.TOTAL_VAT}} &#8378; </small>
+              <br>
+              <small class="lineDef">Genel Toplam</small>
+              <small class="lineVal"> {{newRecord.TOTAL_NET}} &#8378; </small>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+
+  </div>
+  <div class="spacer"></div>
+  <div mat-dialog-actions align="end">
+    <button [disabled]="newRecord.INSPECT" *ngIf="newRecord.isNew" mat-stroked-button cdkFocusInitial (click)="create()">
+      Tamam
+    </button>
+    <button [disabled]="newRecord.INSPECT" mat-stroked-button cdkFocusInitial *ngIf="!newRecord.isNew || newRecord.INSPECT" (click)="update()">
+      Güncelle
+    </button>
+    <button mat-stroked-button [mat-dialog-close]>
+      Vazgeç
+    </button>
+  </div>
+</div>

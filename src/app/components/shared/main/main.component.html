@@ -1,0 +1,70 @@
+<mat-sidenav-container class="sidenav">
+  <mat-sidenav #sidenav mode="push" color="accent" [(opened)]="sidenavActive" (closed)="toggle()" class="sidenavMenu">
+    <div style="text-align: center; user-select: none;">
+      <img src="https://hisselog.com/assets/companies/logo-yazilim-sanayi-ve-ticaret-a-s-logo-thumb.png"  >
+    </div>
+    <mat-nav-list role="list">
+      <a (click)="route(100,'/malzeme-yonetimi')" routerLinkActive="active" (click)="toggle()">
+        <mat-list-item>Malzeme Yönetimi</mat-list-item>
+      </a>
+      <a (click)="route(200,'/finans')" routerLinkActive="active" (click)="toggle()">
+        <mat-list-item>Finans</mat-list-item>
+      </a>
+      <a (click)="route(300,'/satinalma')" routerLinkActive="active" (click)="toggle()">
+        <mat-list-item>Satınalma</mat-list-item>
+      </a>
+      <a (click)="route(400,'/satis')" routerLinkActive="active" (click)="toggle()">
+        <mat-list-item>Satış ve Dağıtım</mat-list-item>
+      </a>
+      <a (click)="route(500,'/ithalat')" routerLinkActive="active" (click)="toggle()">
+        <mat-list-item>İthalat</mat-list-item>
+      </a>
+      <a (click)="route(600,'/ihracat')" routerLinkActive="active" (click)="toggle()">
+        <mat-list-item>İhracat</mat-list-item>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-navbar></app-navbar>
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div *ngIf="mainMenuActive" class="container">
+          <div class="row">
+            <div class="col-md-12 mt-3" style="text-align: center;">
+              <h1><b>Ana Menü</b></h1>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <mat-divider></mat-divider>
+            <div class="row mb-4">
+              <div class="col-md-4">
+                <button class="menu-item" mat-raised-button color="primary" (click)="route(100, '/malzeme-yonetimi')">Malzeme Yönetimi</button>
+              </div>
+              <div class="col-md-4">
+                <button class="menu-item" mat-raised-button color="primary" (click)="route(200, '/finans')">Finans</button>
+              </div>
+              <div class="col-md-4">
+                <button class="menu-item" mat-raised-button color="primary" (click)="route(300, '/satinalma')">Satınalma</button>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <button class="menu-item" mat-raised-button color="primary" (click)="route(400, '/satis')">Satış ve Dağıtım</button>
+              </div>
+              <div class="col-md-4">
+                <button class="menu-item" mat-raised-button color="primary" (click)="route(500, '/ithalat')">İthalat</button>
+              </div>
+              <div class="col-md-4">
+                <button class="menu-item" mat-raised-button color="primary" (click)="route(600, '/ihracat')">İhracat</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+    <!--<app-footer></app-footer>-->
+  </mat-sidenav-content>
+</mat-sidenav-container>

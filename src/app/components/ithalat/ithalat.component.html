@@ -1,0 +1,20 @@
+<div class="row" *ngIf="menuActive">
+  <div class="col-md-12 mt-3" style="text-align: center;">
+    <h1><b>İthalat</b></h1>
+  </div>
+</div>
+<div class="container" *ngIf="menuActive">
+  <div class="col-md-12">
+    <div class="row ml-3 mb-1">
+      <h2>Hareketler</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="row m-3 p-3">
+      <button class="menu-item" mat-raised-button color="primary" (click)="route(501,'/ithalat/ithalat-operasyon-fisleri')">İthalat Operasyon Fişleri</button>
+      <button class="menu-item" mat-raised-button color="primary">Malzeme Dolaşım Fişleri (İptal)</button>
+      <button class="menu-item" mat-raised-button color="primary" (click)="route(504,'/ithalat/dagitim-fisleri')">Dağıtım Fişleri</button>
+      <button class="menu-item" mat-raised-button color="primary" >Millileştirme Fişleri (İptal)</button>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
